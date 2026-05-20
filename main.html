@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Red Mini - Pair Device</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Poppins', system-ui, sans-serif;
+            background: #0a0a0a;
+            overflow-x: hidden;
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            overflow: hidden;
+        }
+
+        .prism {
+            position: absolute;
+            background: linear-gradient(135deg, rgba(255, 0, 0, 0.12), rgba(255, 50, 50, 0.04));
+            border: 1px solid rgba(255, 0, 0, 0.15);
+            animation: movePrism 20s infinite linear;
+        }
+
+        @keyframes movePrism {
+            0% { transform: translateX(-100%) translateY(0) rotate(0deg); opacity: 0; }
+            15% { opacity: 0.5; }
+            85% { opacity: 0.5; }
+            100% { transform: translateX(200%) translateY(100%) rotate(90deg); opacity: 0; }
+        }
+
+        .prism:nth-child(1) { width: 80px; height: 80px; top: 20%; left: 10%; animation-duration: 22s; border-radius: 12px; }
+        .prism:nth-child(2) { width: 120px; height: 120px; top: 60%; left: 70%; animation-duration: 28s; animation-delay: 3s; border-radius: 16px; }
+        .prism:nth-child(3) { width: 50px; height: 50px; top: 70%; left: 20%; animation-duration: 18s; animation-delay: 6s; border-radius: 8px; }
+        .prism:nth-child(4) { width: 100px; height: 100px; top: 30%; left: 80%; animation-duration: 25s; animation-delay: 2s; border-radius: 14px; }
+        .prism:nth-child(5) { width: 60px; height: 60px; top: 80%; left: 50%; animation-duration: 30s; animation-delay: 9s; border-radius: 10px; }
+
+        .container {
+            max-width: 500px;
+            width: 90%;
+            margin: 20px auto;
+            position: relative;
+            z-index: 1;
+            animation: fadeInUp 0.8s ease;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .pair-card {
+            background: rgba(15, 15, 15, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 30px;
+            padding: 35px 25px;
+            text-align: center;
+            border: 1px solid rgba(255, 51, 51, 0.3);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .logo {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 3px solid #ff3333;
+            box-shadow: 0 0 30px rgba(255, 51, 51, 0.3);
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            background: linear-gradient(135deg, #ff3333, #ff6666);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #888;
+            font-size: 0.85rem;
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+            text-align: left;
+        }
+
+        .input-group label {
+            display: block;
+            color: #aaa;
+            font-size: 0.8rem;
+            margin-bottom: 8px;
+        }
+
+        .input-group label i {
+            margin-right: 5px;
+            color: #ff6666;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 15px;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 15px;
+            color: #fff;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #ff3333;
+            box-shadow: 0 0 10px rgba(255, 51, 51, 0.2);
+        }
+
+        .pair-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #ff3333, #cc0000);
+            border: none;
+            padding: 15px;
+            border-radius: 15px;
+            color: #fff;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 20px;
+        }
+
+        .pair-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 5px 20px rgba(255, 51, 51, 0.4);
+        }
+
+        .result-box {
+            background: #0a0a0a;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            border: 1px solid rgba(255, 51, 51, 0.2);
+            display: none;
+        }
+
+        .result-box.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .code-display {
+            font-size: 2rem;
+            font-weight: bold;
+            font-family: monospace;
+            letter-spacing: 5px;
+            background: #1a1a1a;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            color: #ff6666;
+        }
+
+        .copy-btn {
+            background: #333;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 20px;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .copy-btn:hover {
+            background: #ff3333;
+        }
+
+        .info-text {
+            color: #888;
+            font-size: 0.7rem;
+            margin-top: 20px;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: #ff6666;
+            text-decoration: none;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            color: #666;
+            font-size: 0.7rem;
+        }
+
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #fff;
+            border-top-color: #ff3333;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="animated-bg">
+        <div class="prism"></div><div class="prism"></div><div class="prism"></div>
+        <div class="prism"></div><div class="prism"></div>
+    </div>
+
+    <div class="container">
+        <div class="pair-card">
+            <img src="https://files.catbox.moe/eumprt.jpg" alt="Red Mini" class="logo">
+            <h2><i class="fab fa-whatsapp"></i> PAIR DEVICE</h2>
+            <div class="subtitle">Connect your WhatsApp number to Red Mini Bot</div>
+
+            <div class="input-group">
+                <label><i class="fas fa-phone-alt"></i> WhatsApp Number</label>
+                <input type="tel" id="phoneNumber" placeholder="27634988678">
+                <div style="font-size: 0.65rem; color: #666; margin-top: 5px;"><i class="fas fa-info-circle"></i> Include country code without '+'</div>
+            </div>
+
+            <button class="pair-btn" id="pairBtn"><i class="fas fa-link"></i> Generate Pairing Code</button>
+
+            <div id="resultBox" class="result-box">
+                <i class="fas fa-key"></i> Your Pairing Code
+                <div class="code-display" id="codeDisplay">------</div>
+                <button class="copy-btn" id="copyBtn"><i class="far fa-copy"></i> Copy Code</button>
+                <div class="info-text">
+                    <i class="fab fa-whatsapp"></i> Open WhatsApp → Settings → Linked Devices → Link with phone number
+                </div>
+            </div>
+
+            <a href="/status" class="back-link"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+        </div>
+        <div class="footer">
+            <p>© ʀᴇᴅ ᴅʀᴀɢᴏɴ ᴅғs | South Africa 🇿🇦</p>
+            <p>Owner: +27 63 498 8678 | Newsletter: 120363427119111004@newsletter</p>
+        </div>
+    </div>
+
+    <script>
+        const pairBtn = document.getElementById('pairBtn');
+        const phoneInput = document.getElementById('phoneNumber');
+        const resultBox = document.getElementById('resultBox');
+        const codeDisplay = document.getElementById('codeDisplay');
+        const copyBtn = document.getElementById('copyBtn');
+
+        async function generateCode() {
+            let number = phoneInput.value.trim();
+            if (!number) {
+                alert('Please enter your WhatsApp number');
+                return;
+            }
+
+            number = number.replace(/[^0-9]/g, '');
+            if (number.length < 10) {
+                alert('Please enter a valid number with country code');
+                return;
+            }
+
+            pairBtn.disabled = true;
+            pairBtn.innerHTML = '<div class="spinner"></div> Requesting code...';
+
+            try {
+                const response = await fetch(`/code?number=${number}`);
+                const data = await response.json();
+
+                if (data.code) {
+                    codeDisplay.innerText = data.code;
+                    resultBox.classList.add('show');
+                } else {
+                    alert('Failed to get code. Please try again.');
+                }
+            } catch (error) {
+                alert('Connection error. Make sure the bot is running.');
+            } finally {
+                pairBtn.disabled = false;
+                pairBtn.innerHTML = '<i class="fas fa-link"></i> Generate Pairing Code';
+            }
+        }
+
+        copyBtn.addEventListener('click', async () => {
+            const code = codeDisplay.innerText;
+            await navigator.clipboard.writeText(code);
+            copyBtn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+            setTimeout(() => {
+                copyBtn.innerHTML = '<i class="far fa-copy"></i> Copy Code';
+            }, 2000);
+        });
+
+        pairBtn.addEventListener('click', generateCode);
+        phoneInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') generateCode();
+        });
+    </script>
+</body>
+</html>
