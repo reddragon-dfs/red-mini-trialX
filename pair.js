@@ -262,7 +262,7 @@ ${FOOTER}`;
           buttons: buttons,
           headerType: 4
         }, { quoted: msg });
-        break;
+        return;
       }
 
       // ==================== ALIVE COMMAND ====================
